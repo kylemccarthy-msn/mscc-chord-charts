@@ -256,7 +256,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .cc-section:first-child{margin-top:0}
 .cc-spacer{height:8px}
 .cc-group{margin-bottom:2px}
-.cc-chord-row{position:relative;height:1.6em;line-height:1.6}
+.cc-chord-row{position:relative;height:1.6em;line-height:1.6;cursor:crosshair}
 .cc-chord{
   position:absolute;top:0;color:#374151;font-weight:800;font-size:12px;
   cursor:pointer;border-radius:4px;padding:1px 2px;user-select:none;
@@ -265,6 +265,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .cc-chord:hover{background:#e5e7eb}
 .cc-chord-sel{background:var(--ink);color:#fff !important;border-radius:4px;
   padding:1px 5px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+/* chord name input in editor bar */
+#chord-edit-row{display:flex;align-items:center;gap:5px}
+#chord-name-input{
+  width:82px;padding:5px 8px;
+  border:1.5px solid #cbd5e1;border-radius:6px;
+  font-family:var(--mono);font-size:13px;font-weight:700;
+  outline:none;background:#f8fafc;color:var(--ink);
+  transition:border-color .15s,background .15s;
+}
+#chord-name-input:focus{border-color:var(--ink);background:#fff}
+#chord-name-input:disabled{opacity:.35;cursor:default}
+#chord-name-input::placeholder{font-weight:400;color:var(--muted)}
+#chord-del-btn{
+  padding:5px 9px;background:none;border:1.5px solid #e2e8f0;
+  border-radius:6px;color:#dc2626;font-size:12px;font-weight:700;
+  cursor:pointer;transition:background .1s,border-color .1s;line-height:1;
+}
+#chord-del-btn:hover{background:#fef2f2;border-color:#fca5a5}
+#chord-del-btn:disabled{opacity:.3;cursor:default}
 .cc-ref{white-space:pre;color:#94a3b8;font-size:12px;padding:0 2px;
   line-height:1.4;cursor:default;user-select:none}
 .cc-lyric{
@@ -364,6 +383,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     <div id="chart-area"></div>
     <div id="editor-bar">
       <div id="editor-hint"></div>
+      <div id="chord-edit-row">
+        <input id="chord-name-input" type="text" placeholder="Chord…" maxlength="12"
+               disabled autocomplete="off" autocorrect="off" autocapitalize="off"
+               spellcheck="false" onkeydown="chordNameKey(event)">
+        <button id="chord-del-btn" disabled onclick="deleteSelChord()">✕</button>
+      </div>
       <div class="editor-btns">
         <button id="save-copy-btn" onclick="modalSave('copy')">Save Copy</button>
         <button id="save-over-btn" onclick="modalSave('over')">⚠ Overwrite</button>
@@ -646,7 +671,7 @@ ${ptTitle}<div class="meta">${meta}</div>${body}
 render();
 
 // ── Chord editor modal ────────────────────────────────────────────────────────
-let aS=null,aP=null,aJP=[],mSt=0,selCh=null,mMod=false;
+let aS=null,aP=null,aJP=[],mSt=0,selCh=null,mMod=false,chordAdd=null;
 
 async function openEditor(si){
   const s=SONGS[si];
@@ -693,7 +718,7 @@ function closeModal(){
   if(mMod&&!confirm('Discard unsaved changes?'))return;
   document.getElementById('modal').style.display='none';
   document.body.style.overflow='';
-  aS=null;aP=null;aJP=[];selCh=null;mMod=false;
+  aS=null;aP=null;aJP=[];selCh=null;chordAdd=null;mMod=false;
 }
 document.getElementById('modal').addEventListener('click',function(e){
   if(e.target===this)closeModal();
@@ -751,7 +776,7 @@ function renderChart(){
     const refHTML=jpLine?`<div class="cc-ref" title="Japanese reference">${esc(jpLine)}</div>`:'';
 
     f.push(`<div class="cc-group${isAct?' active':''}">
-      <div class="cc-chord-row">${cr||' '}</div>
+      <div class="cc-chord-row" onmousedown="chordRowBg(event,${li})">${cr||' '}</div>
       ${refHTML}
       <div class="cc-lyric${isAct?' cc-lyric-drop':''}"
            contenteditable="true" spellcheck="false"
@@ -802,15 +827,91 @@ function lyricKey(e,li){
 }
 
 function updEdBar(){
-  const h=document.getElementById('editor-hint');
+  const h   = document.getElementById('editor-hint');
+  const inp = document.getElementById('chord-name-input');
+  const del = document.getElementById('chord-del-btn');
+
   if(selCh){
-    const ch=aP[selCh.li]?.chord_positions[selCh.ps]||'?';
-    h.innerHTML=`<strong>${esc(tChord(ch,mSt))}</strong> selected — click lyric to reposition &nbsp;<span class="kbd">←</span><span class="kbd">→</span> — <em style="color:var(--muted)">Esc to deselect</em>`;
+    const raw = aP[selCh.li]?.chord_positions[selCh.ps]||'';
+    inp.value    = raw;
+    inp.disabled = false;
+    del.disabled = false;
+    // Focus the input so user can immediately type a new name
+    requestAnimationFrame(()=>{ inp.focus(); inp.select(); });
+    h.innerHTML=`Rename chord above &nbsp;·&nbsp; <span class="kbd">←</span><span class="kbd">→</span> to move &nbsp;·&nbsp; click lyric to reposition &nbsp;·&nbsp; <em style="color:var(--muted)">Esc = deselect</em>`;
+  } else if(chordAdd){
+    inp.value    = '';
+    inp.disabled = false;
+    del.disabled = true;
+    requestAnimationFrame(()=>{ inp.focus(); });
+    h.innerHTML=`Type chord name &amp; press <span class="kbd">Enter</span> to add at position ${chordAdd.pos} &nbsp;·&nbsp; <em style="color:var(--muted)">Esc = cancel</em>`;
   } else {
-    h.innerHTML=`Click a <strong>chord</strong> to select &amp; reposition it. Click a <strong>lyric line</strong> to edit the text directly.`;
+    inp.value    = '';
+    inp.disabled = true;
+    del.disabled = true;
+    h.innerHTML=`Click a <strong>chord</strong> to rename or reposition it. Click <strong>blank chord row space</strong> to add a chord. Click a <strong>lyric</strong> to edit text.`;
   }
   document.getElementById('save-over-btn').disabled=false;
   document.getElementById('save-copy-btn').disabled=false;
+}
+
+// ── Chord add / rename / delete ──────────────────────────────────────────────
+function chordRowBg(e, li){
+  // Ignore clicks that land on an existing chord span — let chordMD handle those
+  if(e.target.classList.contains('cc-chord'))return;
+  e.preventDefault();
+
+  // Measure 1ch width from this element
+  const tmp=document.createElement('span');
+  tmp.style.cssText='position:absolute;visibility:hidden;width:1ch;left:0;top:0';
+  e.currentTarget.appendChild(tmp);
+  const chW=tmp.getBoundingClientRect().width||7.8;
+  e.currentTarget.removeChild(tmp);
+
+  const relX=e.clientX-e.currentTarget.getBoundingClientRect().left;
+  const pos=String(Math.max(0,Math.round(relX/chW)));
+
+  selCh=null; chordAdd={li, pos};
+  renderChart();
+  updEdBar();
+}
+
+function chordNameKey(e){
+  if(e.key==='Enter'){ e.preventDefault(); applyChordName(); }
+  if(e.key==='Escape'){
+    selCh=null; chordAdd=null;
+    renderChart(); updEdBar();
+  }
+}
+
+function applyChordName(){
+  const name=document.getElementById('chord-name-input').value.trim().replace(/\s+/g,'');
+  if(selCh){
+    // Rename: update chord name at its current position
+    const chords=aP[selCh.li].chord_positions;
+    if(name){
+      chords[selCh.ps]=name;
+    } else {
+      delete chords[selCh.ps]; // empty name = delete
+    }
+    mMod=true; selCh=null;
+    renderChart(); updEdBar();
+  } else if(chordAdd){
+    // Add new chord at the computed position
+    if(name){
+      aP[chordAdd.li].chord_positions[chordAdd.pos]=name;
+      mMod=true;
+    }
+    chordAdd=null;
+    renderChart(); updEdBar();
+  }
+}
+
+function deleteSelChord(){
+  if(!selCh)return;
+  delete aP[selCh.li].chord_positions[selCh.ps];
+  mMod=true; selCh=null;
+  renderChart(); updEdBar();
 }
 
 async function modalSave(mode){
