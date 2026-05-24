@@ -671,13 +671,26 @@ ${ptTitle}<div class="meta">${meta}</div>${body}
 render();
 
 // ── Chord editor modal ────────────────────────────────────────────────────────
-let aS=null,aP=null,aJP=[],mSt=0,selCh=null,mMod=false,chordAdd=null;
+let aS=null,aP=null,aJP=[],mSt=0,selCh=null,mMod=false,chordAdd=null,ccCharW=0;
+
+function measureCCCharW(){
+  // Measure the monospace character width used by #chart-area (SF Mono 13px)
+  // Do this once and cache — avoids unreliable in-contenteditable measurements
+  const s=document.createElement('span');
+  s.style.cssText='position:fixed;top:-9999px;left:-9999px;visibility:hidden;'+
+    "white-space:pre;font-family:'SF Mono','Fira Mono','Courier New',monospace;font-size:13px";
+  s.textContent='MMMMMMMMMM';
+  document.body.appendChild(s);
+  ccCharW=s.getBoundingClientRect().width/10||7.8;
+  document.body.removeChild(s);
+}
 
 async function openEditor(si){
   const s=SONGS[si];
   if(!s?.pt_pairs?.length)return;
   aS=s;aP=JSON.parse(JSON.stringify(s.pt_pairs));
-  mSt=0;selCh=null;mMod=false;aJP=[];
+  mSt=0;selCh=null;chordAdd=null;mMod=false;aJP=[];
+  measureCCCharW();
 
   document.getElementById('modal-title').textContent=s.title;
   document.getElementById('modal-meta').textContent=
@@ -732,9 +745,9 @@ document.addEventListener('keydown',e=>{
   if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
   e.preventDefault();
   const d=e.key==='ArrowLeft'?-1:1;
-  const pair=aP[selCh.li];const lyric=pair.lyric||'';
+  const pair=aP[selCh.li];
   const ch=pair.chord_positions[selCh.ps];if(ch===undefined)return;
-  const np=String(Math.max(0,Math.min(+selCh.ps+d,lyric.length)));
+  const np=String(Math.max(0,+selCh.ps+d)); // no upper bound — allow past end of lyric
   if(np!==selCh.ps){
     delete pair.chord_positions[selCh.ps];pair.chord_positions[np]=ch;
     selCh={li:selCh.li,ps:np};mMod=true;renderChart();
@@ -801,19 +814,10 @@ function lyricMD(e,li){
   if(!selCh)return; // no chord selected — allow normal contenteditable focus
   e.preventDefault(); // block contenteditable cursor when chord is selected
   if(selCh.li!==li){selCh=null;renderChart();return;}
-  const el=e.currentTarget;
-  const lyric=aP[li].lyric||'';
-
-  // Measure actual monospace char width using the CSS 'ch' unit
-  const tmp=document.createElement('span');
-  tmp.style.cssText='position:absolute;visibility:hidden;width:1ch;white-space:pre;left:0;top:0';
-  el.appendChild(tmp);
-  const cw=tmp.getBoundingClientRect().width||7.8;
-  el.removeChild(tmp);
-
-  // Lyric div has 3px left padding — subtract it so char 0 aligns with chord position 0
-  const relX=e.clientX-el.getBoundingClientRect().left-3;
-  const np=String(Math.max(0,Math.min(Math.round(relX/cw),lyric.length)));
+  // Lyric div has 3px left padding — subtract so char 0 aligns with chord position 0
+  // No upper bound: chords can live past the end of the lyric text
+  const relX=e.clientX-e.currentTarget.getBoundingClientRect().left-3;
+  const np=String(Math.max(0,Math.round(relX/ccCharW)));
   const pair=aP[li];const ch=pair.chord_positions[selCh.ps];
   if(ch!==undefined&&np!==selCh.ps){
     delete pair.chord_positions[selCh.ps];pair.chord_positions[np]=ch;
@@ -868,19 +872,25 @@ function chordRowBg(e, li){
   if(e.target.classList.contains('cc-chord'))return;
   e.preventDefault();
 
-  // Measure 1ch width from this element
-  const tmp=document.createElement('span');
-  tmp.style.cssText='position:absolute;visibility:hidden;width:1ch;left:0;top:0';
-  e.currentTarget.appendChild(tmp);
-  const chW=tmp.getBoundingClientRect().width||7.8;
-  e.currentTarget.removeChild(tmp);
-
   const relX=e.clientX-e.currentTarget.getBoundingClientRect().left;
-  const pos=String(Math.max(0,Math.round(relX/chW)));
+  const pos=String(Math.max(0,Math.round(relX/ccCharW)));
 
-  selCh=null; chordAdd={li, pos};
-  renderChart();
-  updEdBar();
+  if(selCh){
+    // Chord already selected — reposition it to where we clicked on the row
+    // (chord row has no padding, so relX maps directly to char position)
+    if(selCh.li!==li){selCh=null;renderChart();return;}
+    const pair=aP[li];const ch=pair.chord_positions[selCh.ps];
+    if(ch!==undefined&&pos!==selCh.ps){
+      delete pair.chord_positions[selCh.ps];pair.chord_positions[pos]=ch;
+      selCh={li,ps:pos};mMod=true;
+    }
+    renderChart();
+  } else {
+    // No chord selected — enter add-chord mode
+    chordAdd={li,pos};
+    renderChart();
+    updEdBar();
+  }
 }
 
 function chordNameKey(e){
