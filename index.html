@@ -87,7 +87,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   box-shadow:var(--shadow);
   overflow:hidden;
 }
-.card.has-pt{border-left:3px solid var(--dark)}
 
 /* card head */
 .card-head{
@@ -123,8 +122,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   display:flex;flex-direction:column;align-items:center;gap:8px}
 
 /* section label */
-.slbl{font-size:10px;font-weight:800;text-transform:uppercase;
-  letter-spacing:.7px;color:var(--muted);margin-bottom:7px}
+.slbl{
+  font-size:10px;font-weight:900;text-transform:uppercase;
+  letter-spacing:.9px;color:#475569;
+  margin-bottom:9px;padding-bottom:6px;
+  border-bottom:1.5px solid var(--border);
+  display:block;
+}
 
 /* ── Listen section ─────────────────────────────────────────────── */
 .listen-rows{display:flex;flex-direction:column;gap:7px}
@@ -133,17 +137,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .listen-btns{display:flex;gap:5px;flex-wrap:wrap}
 .ab{
   display:inline-flex;align-items:center;gap:3px;
-  padding:4px 9px;border-radius:6px;border:1.5px solid;
-  font-size:11px;font-weight:700;text-decoration:none;
-  transition:opacity .12s;white-space:nowrap;
+  padding:4px 10px;border-radius:6px;
+  border:1px solid var(--border);
+  font-size:11px;font-weight:600;text-decoration:none;
+  background:#f9fafb;color:#475569;
+  transition:background .12s,border-color .12s;white-space:nowrap;
 }
-.ab:hover{opacity:.78}
-/* YouTube: black */
-.ab-yt{background:#111;border-color:#111;color:#fff}
-/* Spotify: white + black border */
-.ab-sp{background:#fff;border-color:#222;color:#111}
-/* Generic search: light gray */
-.ab-search{background:var(--dark-dim);border-color:var(--dark-bd);color:var(--sub)}
+.ab:hover{background:#f1f5f9;border-color:#cbd5e1;color:var(--ink)}
+.ab-yt{}
+.ab-sp{}
+.ab-search{color:var(--muted)}
 
 /* ── Charts section ─────────────────────────────────────────────── */
 .chart-rows{display:flex;flex-direction:column;gap:8px}
