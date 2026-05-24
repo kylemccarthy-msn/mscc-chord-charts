@@ -7,25 +7,24 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f4f5f9;
+  --bg:#f8fafc;
   --surface:#fff;
-  --border:#e5e7eb;
-  --ink:#111827;
-  --sub:#6b7280;
-  --muted:#9ca3af;
-  --accent:#4f46e5;
-  --accent-dim:#eef2ff;
+  --border:#e2e8f0;
+  --ink:#0f172a;
+  --sub:#64748b;
+  --muted:#94a3b8;
+  --accent:#2563eb;
+  --accent-dim:#eff6ff;
+  --accent-bd:#bfdbfe;
   --green:#16a34a;
   --green-dim:#f0fdf4;
   --amber:#92400e;
   --amber-dim:#fffbeb;
   --amber-bd:#fde68a;
-  --violet:#6d28d9;
-  --violet-dim:#f5f3ff;
   --yt-bg:#fff1f1;--yt-bd:#fecaca;--yt:#dc2626;
   --sp-bg:#f0fdf4;--sp-bd:#bbf7d0;--sp:#15803d;
-  --r:10px;
-  --shadow:0 2px 12px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.05);
+  --r:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
   --mono:'SF Mono','Courier New',monospace;
 }
 html{font-size:14px;-webkit-font-smoothing:antialiased}
@@ -34,11 +33,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
 /* ── Topbar ─────────────────────────────────────────────────────── */
 .topbar{
-  background:#1e1b4b;color:#fff;
-  padding:0 24px;height:50px;
+  background:#0f172a;color:#fff;
+  padding:0 24px;height:52px;
   display:flex;align-items:center;gap:20px;
   position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 16px rgba(0,0,0,.3);
+  box-shadow:0 2px 12px rgba(0,0,0,.25);
 }
 .brand{font-size:14px;font-weight:700;flex:1;letter-spacing:-.1px}
 .brand span{font-size:12px;opacity:.4;font-weight:400;margin-left:6px}
@@ -52,7 +51,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .t-zip:hover{background:rgba(255,255,255,.16);color:#fff}
 
 /* ── Page ───────────────────────────────────────────────────────── */
-.page{max-width:820px;margin:0 auto;padding:0 20px}
+.page{max-width:880px;margin:0 auto;padding:0 20px}
 
 /* ── Search + filter ────────────────────────────────────────────── */
 .search-area{padding:22px 0 14px}
@@ -62,7 +61,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .search{width:100%;padding:11px 13px 11px 38px;border:1.5px solid var(--border);
   border-radius:var(--r);font-size:14px;background:#fff;color:var(--ink);
   outline:none;transition:border-color .15s,box-shadow .15s}
-.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.09)}
+.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
 .search::placeholder{color:var(--muted)}
 .filter-row{display:flex;align-items:center;gap:6px;margin-top:9px}
 .pill{padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);
@@ -80,7 +79,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
 /* ── Song cards ─────────────────────────────────────────────────── */
 .cards{display:flex;flex-direction:column;gap:10px;padding-bottom:60px}
-
 .card{
   background:var(--surface);
   border:1.5px solid var(--border);
@@ -90,9 +88,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 .card.has-pt{border-left:3px solid var(--accent)}
 
-/* card title area */
+/* card head */
 .card-head{
-  padding:13px 16px 11px;
+  padding:13px 16px 10px;
   display:flex;align-items:flex-start;gap:10px;
 }
 .card-title-block{flex:1;min-width:0}
@@ -100,41 +98,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-sub{font-size:11px;color:var(--muted);margin-top:2px}
 .card-badges{display:flex;gap:5px;align-items:center;flex-shrink:0;margin-top:2px}
-
-/* badges */
 .bdg{font-size:10px;font-weight:700;border-radius:5px;padding:2px 6px;
   white-space:nowrap;letter-spacing:.1px}
-.bdg-key{background:#f1f5f9;color:var(--sub);font-family:var(--mono);font-size:11px}
 .bdg-pt{background:var(--accent-dim);color:var(--accent)}
 .bdg-en{background:var(--green-dim);color:var(--green)}
 
-/* card body */
+/* card body — 3 columns */
 .card-body{
-  padding:0 16px 14px;
-  display:grid;gap:12px;
+  padding:12px 16px 16px;
+  display:flex;gap:0;
+  border-top:1.5px solid var(--border);
+  align-items:flex-start;
 }
-/* divider between head and body */
-.card.has-pt .card-body{border-top:1px solid #f3f4f8}
+.cb-col{padding:0 14px}
+.cb-col:first-child{padding-left:0}
+.cb-col:last-child{padding-right:0}
+.cb-col+.cb-col{border-left:1px solid var(--border)}
+.cb-listen{flex:0 0 auto;min-width:130px}
+.cb-charts{flex:1 1 auto;min-width:0}
+.cb-key{flex:0 0 auto;min-width:90px;display:flex;flex-direction:column;align-items:center;gap:8px}
 
 /* section label */
-.slbl{
-  font-size:10px;font-weight:800;text-transform:uppercase;
-  letter-spacing:.7px;color:var(--muted);margin-bottom:7px;
-}
+.slbl{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.7px;color:var(--muted);margin-bottom:7px}
 
 /* ── Listen section ─────────────────────────────────────────────── */
-.listen-rows{display:flex;flex-direction:column;gap:6px}
-.listen-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.listen-lang{
-  font-size:11px;font-weight:600;color:var(--sub);
-  min-width:78px;flex-shrink:0;
-}
+.listen-rows{display:flex;flex-direction:column;gap:7px}
+.listen-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.listen-flag{font-size:17px;flex-shrink:0;line-height:1}
 .listen-btns{display:flex;gap:5px;flex-wrap:wrap}
-
-/* audio buttons */
 .ab{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:4px 10px;border-radius:6px;border:1.5px solid;
+  display:inline-flex;align-items:center;gap:3px;
+  padding:4px 9px;border-radius:6px;border:1.5px solid;
   font-size:11px;font-weight:700;text-decoration:none;
   transition:opacity .12s;white-space:nowrap;
 }
@@ -144,93 +139,65 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .ab-search{background:#f9fafb;border-color:var(--border);color:var(--sub)}
 
 /* ── Charts section ─────────────────────────────────────────────── */
-.chart-rows{display:flex;flex-direction:column;gap:7px}
-.chart-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.chart-lang{
-  font-size:11px;font-weight:600;color:var(--sub);
-  min-width:78px;flex-shrink:0;
-}
+.chart-rows{display:flex;flex-direction:column;gap:8px}
+.chart-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.chart-lang{font-size:11px;font-weight:600;color:var(--sub);
+  min-width:100px;flex-shrink:0;white-space:nowrap}
 .chart-btns{display:flex;gap:5px;flex-wrap:wrap}
-
 .btn{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:5px 11px;border-radius:6px;
-  font-size:12px;font-weight:600;
-  text-decoration:none;cursor:pointer;border:none;
+  display:inline-flex;align-items:center;gap:3px;
+  padding:5px 10px;border-radius:6px;
+  font-size:11px;font-weight:700;
+  text-decoration:none;cursor:pointer;border:1.5px solid transparent;
   transition:opacity .12s;white-space:nowrap;line-height:1;
 }
 .btn:hover{opacity:.82}
-.btn-view{background:var(--accent-dim);color:var(--accent)}
+.btn-view{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-bd)}
 .btn-save{background:var(--accent);color:#fff}
-.btn-edit{background:var(--violet-dim);color:var(--violet)}
-
+.btn-edit{background:#f1f5f9;color:var(--sub);border-color:var(--border)}
+.btn-edit:hover{background:var(--accent-dim);color:var(--accent);
+  border-color:var(--accent-bd);opacity:1}
 .no-pdf{font-size:12px;color:var(--muted);font-style:italic}
 
-/* ── Transpose section ──────────────────────────────────────────── */
-.card-footer{
-  padding:0 16px 14px;
-  display:flex;align-items:center;justify-content:flex-end;
+/* ── Key section ─────────────────────────────────────────────────── */
+.key-display{display:flex;align-items:baseline;gap:5px;justify-content:center}
+.key-badge{
+  font-family:var(--mono);font-size:26px;font-weight:900;
+  color:var(--ink);line-height:1;text-align:center;
 }
-.btn-transpose{
-  font-size:12px;font-weight:700;
-  background:var(--amber-dim);color:var(--amber);
-  border:1.5px solid var(--amber-bd);border-radius:7px;
-  padding:5px 12px;cursor:pointer;
-  transition:background .12s;
-  display:flex;align-items:center;gap:5px;
+.key-arrow{font-size:13px;color:var(--muted)}
+.key-new{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--accent)}
+.key-from{font-size:10px;color:var(--muted);text-align:center;
+  font-family:var(--mono);margin-top:1px}
+.key-stepper{
+  display:flex;align-items:center;gap:2px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:8px;padding:2px;
 }
-.btn-transpose:hover{background:var(--amber-bd)}
-.btn-transpose.active{
-  background:var(--amber-bd);border-color:#fbbf24;
+.key-step{
+  width:28px;height:26px;border:none;background:transparent;
+  color:var(--sub);font-size:14px;font-weight:800;cursor:pointer;
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  transition:background .1s;font-family:inherit;
 }
-
-.tr-panel{
-  display:none;
-  padding:12px 16px;
-  background:var(--amber-dim);
-  border-top:1px solid var(--amber-bd);
-  align-items:center;gap:10px;flex-wrap:wrap;
+.key-step:hover{background:var(--border);color:var(--ink)}
+.key-cnt{font-size:10px;font-family:var(--mono);font-weight:700;
+  color:var(--muted);min-width:20px;text-align:center}
+.key-cnt.nonzero{color:var(--accent)}
+.btn-view-tr{
+  font-size:11px;font-weight:700;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:7px;
+  padding:5px 11px;cursor:pointer;
+  transition:opacity .12s;
+  display:flex;align-items:center;gap:4px;white-space:nowrap;
 }
-.tr-panel.open{display:flex}
-
-.tr-key-display{display:flex;align-items:center;gap:6px}
-.tr-key{
-  font-family:var(--mono);font-size:15px;font-weight:800;
-  background:#fff;border:1.5px solid var(--amber-bd);
-  border-radius:6px;padding:3px 10px;color:var(--amber);text-align:center;
+.btn-view-tr:hover{opacity:.85}
+.key-reset{
+  font-size:10px;color:var(--muted);background:none;border:none;
+  cursor:pointer;padding:2px 4px;font-family:inherit;
 }
-.tr-arrow{color:var(--muted);font-size:12px}
-.tr-new{
-  font-family:var(--mono);font-size:15px;font-weight:800;
-  background:var(--violet-dim);border:1.5px solid #ddd6fe;
-  border-radius:6px;padding:3px 10px;color:var(--violet);text-align:center;
-  display:none;
-}
-.tr-new.show{display:inline-block}
-
-.tr-stepper{
-  display:flex;align-items:center;
-  background:#fff;border:1.5px solid var(--amber-bd);border-radius:7px;overflow:hidden;
-}
-.tr-step{
-  width:30px;height:28px;border:none;background:transparent;
-  color:var(--amber);font-size:15px;font-weight:800;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:background .1s;
-}
-.tr-step:hover{background:var(--amber-bd)}
-.tr-cnt{
-  font-size:11px;font-family:var(--mono);font-weight:700;
-  color:var(--sub);min-width:24px;text-align:center;
-}
-
-.tr-actions{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;align-items:center}
-.btn-tr-save{background:var(--green);color:#fff;border:none;
-  box-shadow:0 1px 4px rgba(22,163,74,.2)}
-.btn-tr-over{background:#fff;color:var(--amber);border:1.5px solid var(--amber-bd)}
-.btn-tr-over:hover{background:var(--amber-dim) !important}
-.btn-tr-reset{background:none;border:none;color:var(--muted);
-  font-size:12px;cursor:pointer;padding:4px 6px;font-family:inherit}
-.btn-tr-reset:hover{color:var(--sub)}
+.key-reset:hover{color:var(--sub)}
 
 /* ── Chord editor modal ─────────────────────────────────────────── */
 #modal{
@@ -245,7 +212,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   box-shadow:0 24px 60px rgba(0,0,0,.22),0 4px 16px rgba(0,0,0,.1);
 }
 #modal-head{
-  background:linear-gradient(135deg,#1e1b4b,#4338ca);color:#fff;
+  background:linear-gradient(135deg,#0f172a,#1e40af);color:#fff;
   padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
 }
 .mh-info{flex:1;min-width:0}
@@ -256,20 +223,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
   border-radius:8px;padding:5px 10px;
 }
-.mh-key-lbl{font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.mh-key-lbl{font-size:10px;opacity:.5;text-transform:uppercase;
+  letter-spacing:.5px;font-weight:700}
 .mh-semi{width:26px;height:26px;background:rgba(255,255,255,.12);border:none;
   border-radius:5px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:background .1s}
 .mh-semi:hover{background:rgba(255,255,255,.25)}
-#mh-key{font-size:18px;font-weight:900;font-family:var(--mono);min-width:2em;text-align:center}
+#mh-key{font-size:18px;font-weight:900;font-family:var(--mono);
+  min-width:2em;text-align:center}
 #mh-offset{font-size:10px;font-weight:700;font-family:var(--mono);
   background:rgba(255,255,255,.18);border-radius:8px;padding:2px 6px;display:none}
 #modal-close{width:30px;height:30px;background:rgba(255,255,255,.1);border:none;
   color:#fff;border-radius:7px;font-size:17px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:background .1s}
 #modal-close:hover{background:rgba(255,255,255,.22)}
-
-/* chart view — full bilingual */
 #chart-area{
   padding:14px 18px;overflow-x:auto;
   max-height:58vh;overflow-y:auto;
@@ -283,7 +250,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 .cc-section:first-child{margin-top:0}
 .cc-spacer{height:8px}
-/* a single lyric group = chord row + reference row + editable PT row */
 .cc-group{margin-bottom:2px}
 .cc-chord-row{position:relative;height:1.6em;line-height:1.6}
 .cc-chord{
@@ -294,27 +260,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .cc-chord:hover{background:#fce7f3}
 .cc-chord-sel{background:#be185d;color:#fff !important;border-radius:4px;
   padding:1px 5px;box-shadow:0 2px 6px rgba(190,24,93,.3)}
-/* JP reference line */
-.cc-ref{
-  white-space:pre;color:#94a3b8;font-size:12px;padding:0 2px;
-  line-height:1.4;cursor:default;user-select:none;
-}
-/* PT editable line */
-.cc-lyric{
-  white-space:pre;color:#1e293b;padding:1px 2px;border-radius:4px;
-  cursor:default;line-height:1.5;
-}
+.cc-ref{white-space:pre;color:#94a3b8;font-size:12px;padding:0 2px;
+  line-height:1.4;cursor:default;user-select:none}
+.cc-lyric{white-space:pre;color:#1e293b;padding:1px 2px;border-radius:4px;
+  cursor:default;line-height:1.5}
 .cc-lyric-drop{cursor:crosshair;outline:2px dashed var(--accent);
-  outline-offset:1px;background:#eef2ff;color:#111}
-.cc-lyric-drop:hover{background:#e0e7ff}
+  outline-offset:1px;background:#eff6ff;color:#111}
+.cc-lyric-drop:hover{background:#dbeafe}
 .cc-group.active .cc-lyric{background:#f0f9ff}
-
-/* editor footer */
 #editor-bar{
   padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   background:#fff;border-top:1px solid var(--border);
 }
-#editor-hint{flex:1;font-size:12px;color:var(--sub);display:flex;align-items:center;gap:5px}
+#editor-hint{flex:1;font-size:12px;color:var(--sub);
+  display:flex;align-items:center;gap:5px}
 .kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:4px;
   padding:1px 5px;font-size:10px;font-family:var(--mono)}
 .editor-btns{display:flex;gap:7px}
@@ -339,11 +298,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 #toast.show{opacity:1}
 
 /* ── Responsive ─────────────────────────────────────────────────── */
-@media(max-width:600px){
+@media(max-width:640px){
   .topbar{padding:0 14px}
   .t-meta,.brand span{display:none}
   .page{padding:0 12px}
-  .listen-lang,.chart-lang{min-width:66px}
+  .card-body{flex-direction:column}
+  .cb-col+.cb-col{border-left:none;border-top:1px solid var(--border);padding-top:12px}
+  .cb-listen{min-width:0;width:100%}
+  .cb-key{align-items:flex-start;flex-direction:row;flex-wrap:wrap;gap:8px;width:100%}
   #chart-area{max-height:44vh}
 }
 </style>
@@ -443,8 +405,7 @@ function applyTrans(pairs,st){
 
 // ── State ────────────────────────────────────────────────────────────────────
 let filt='all';
-const tOpen={};   // si → bool (transpose panel open)
-const tOff={};    // si → semitone offset
+const tOff={};   // si → semitone offset
 
 function setFilt(f){
   filt=f;
@@ -476,80 +437,109 @@ function render(){
   document.getElementById('list').innerHTML=html;
 }
 
-// ── Audio button builder ─────────────────────────────────────────────────────
+// ── Audio button helper ──────────────────────────────────────────────────────
 function isSpecificYt(url){return url&&url.includes('watch?v=')}
-function abtn(url,type,label){
+function abtn(url,type){
   if(!url)return'';
-  const cls=type==='yt'?(isSpecificYt(url)?'ab-yt':'ab-search')
+  const isSpec=type==='yt'?isSpecificYt(url):true;
+  const cls=type==='yt'?(isSpec?'ab-yt':'ab-search')
            :type==='sp'?'ab-sp':'ab-search';
-  const lbl=type==='yt'?(isSpecificYt(url)?'▶ '+label:'🔍 '+label):'♫ '+label;
+  const lbl=type==='yt'?(isSpec?'YouTube':'🔍 YouTube'):'Spotify';
   return`<a class="ab ${cls}" href="${escA(url)}" target="_blank" rel="noopener">${lbl}</a>`;
 }
 
+// ── Card builder ─────────────────────────────────────────────────────────────
 function buildCard(s,si){
   const hasPt=s.has_pt;
   const meta=[s.ccli?'CCLI '+s.ccli:'',s.arr&&s.arr!==s.title?s.arr:''].filter(Boolean).join(' · ');
 
-  // Badges (right of title)
   const badges=[
-    s.key?`<span class="bdg bdg-key">${esc(s.key)}</span>`:'',
     hasPt?`<span class="bdg bdg-pt">PT</span>`:'',
     !hasPt&&s.pdf_jp_en?`<span class="bdg bdg-en">EN</span>`:'',
   ].filter(Boolean).join('');
 
-  // Audio links
-  const jpYt  = abtn(s.yt_jp||s.yt_search,  'yt',  'Japanese');
-  const jpSp  = abtn(s.sp_jp||s.sp_search,  'sp',  'Japanese');
-  const ptYt  = abtn(s.yt_pt, 'yt', 'Portuguese');
-  const ptSp  = abtn(s.sp_pt, 'sp', 'Portuguese');
+  // ── Listen column ──
+  const jpYt=abtn(s.yt_jp||s.yt_search,'yt');
+  const jpSp=abtn(s.sp_jp||s.sp_search,'sp');
+  const ptYt=abtn(s.yt_pt,'yt');
+  const ptSp=abtn(s.sp_pt,'sp');
 
   const listenRows=[];
   if(jpYt||jpSp) listenRows.push(`<div class="listen-row">
-    <span class="listen-lang">🇯🇵 Japanese</span>
+    <span class="listen-flag">🇯🇵</span>
     <div class="listen-btns">${jpYt}${jpSp}</div></div>`);
   if(ptYt||ptSp) listenRows.push(`<div class="listen-row">
-    <span class="listen-lang">🇧🇷 Portuguese</span>
+    <span class="listen-flag">🇧🇷</span>
     <div class="listen-btns">${ptYt}${ptSp}</div></div>`);
 
-  const listenSection=listenRows.length?`
-    <div>
-      <div class="slbl">Listen</div>
-      <div class="listen-rows">${listenRows.join('')}</div>
-    </div>`:'';
+  const listenCol=listenRows.length?`<div class="cb-col cb-listen">
+    <div class="slbl">Listen</div>
+    <div class="listen-rows">${listenRows.join('')}</div>
+  </div>`:'';
 
-  // Chord chart links
+  // ── Charts column ──
   const enV=s.pdf_jp_en||s.pdf_jp_en_url;
-  const enD=s.pdf_jp_en_url||s.pdf_jp_en;
   const ptV=s.pdf_jp_pt||s.pdf_jp_pt_url;
-  const ptD=s.pdf_jp_pt_url||s.pdf_jp_pt;
   const hasPairs=s.pt_pairs&&s.pt_pairs.length>0;
 
   const chartRows=[];
   if(enV) chartRows.push(`<div class="chart-row">
-    <span class="chart-lang">🇯🇵 English</span>
+    <span class="chart-lang">JP + English</span>
     <div class="chart-btns">
-      <a class="btn btn-view" href="${enV}" target="_blank">View</a>
-      <a class="btn btn-save" href="${enD}" target="_blank">↓ Save</a>
+      <a class="btn btn-view" href="${escA(enV)}" target="_blank">View</a>
+      <a class="btn btn-save" href="${escA(enV)}" download>↓</a>
     </div></div>`);
   if(ptV) chartRows.push(`<div class="chart-row">
-    <span class="chart-lang">🇧🇷 Portuguese</span>
+    <span class="chart-lang">JP + Portuguese</span>
     <div class="chart-btns">
-      <a class="btn btn-view" href="${ptV}" target="_blank">View</a>
-      <a class="btn btn-save" href="${ptD}" target="_blank">↓ Save</a>
+      <a class="btn btn-view" href="${escA(ptV)}" target="_blank">View</a>
+      <a class="btn btn-save" href="${escA(ptV)}" download>↓</a>
       ${hasPairs?`<button class="btn btn-edit" onclick="openEditor(${si})">✏ Edit</button>`:''}
     </div></div>`);
   if(!enV&&!ptV) chartRows.push(`<p class="no-pdf">No PDF available yet.</p>`);
 
-  const chartsSection=`
-    <div>
-      <div class="slbl">Chord Charts</div>
-      <div class="chart-rows">${chartRows.join('')}</div>
-    </div>`;
+  const chartsCol=`<div class="cb-col cb-charts">
+    <div class="slbl">Chord Charts</div>
+    <div class="chart-rows">${chartRows.join('')}</div>
+  </div>`;
 
-  // Transpose strip (only if has PT pairs + key)
-  const trStrip=buildTrStrip(s,si);
+  // ── Key column ──
+  const off=tOff[si]||0;
+  const hasTr=(s.pt_pairs&&s.pt_pairs.length>0)&&s.key;
+  let keyInner='';
 
-  return `<div class="card${hasPt?' has-pt':''}" id="card-${si}">
+  if(s.key){
+    const newKey=off!==0?tNote(s.key,off):'';
+    const cnt=off===0?'±0':(off>0?'+'+off:String(off));
+    if(newKey){
+      keyInner+=`<div class="key-display">
+        <span class="key-badge">${esc(newKey)}</span>
+      </div>
+      <div class="key-from">from ${esc(s.key)}</div>`;
+    } else {
+      keyInner+=`<div class="key-display">
+        <span class="key-badge">${esc(s.key)}</span>
+      </div>`;
+    }
+    if(hasTr){
+      keyInner+=`<div class="key-stepper">
+        <button class="key-step" onclick="trShift(event,${si},-1)" title="Lower one semitone">♭</button>
+        <span class="key-cnt${off!==0?' nonzero':''}">${cnt}</span>
+        <button class="key-step" onclick="trShift(event,${si},+1)" title="Raise one semitone">♯</button>
+      </div>`;
+      if(off!==0){
+        keyInner+=`<button class="btn-view-tr" onclick="viewTransposed(event,${si})">View ↗</button>
+        <button class="key-reset" onclick="trReset(event,${si})">✕ reset</button>`;
+      }
+    }
+  }
+
+  const keyCol=s.key?`<div class="cb-col cb-key">
+    <div class="slbl">Key</div>
+    ${keyInner}
+  </div>`:'';
+
+  return`<div class="card${hasPt?' has-pt':''}" id="card-${si}">
     <div class="card-head">
       <div class="card-title-block">
         <div class="card-title">${esc(s.title)}</div>
@@ -558,53 +548,14 @@ function buildCard(s,si){
       <div class="card-badges">${badges}</div>
     </div>
     <div class="card-body">
-      ${listenSection}
-      ${chartsSection}
+      ${listenCol}
+      ${chartsCol}
+      ${keyCol}
     </div>
-    ${trStrip}
   </div>`;
 }
 
-function buildTrStrip(s,si){
-  if(!s.pt_pairs||!s.pt_pairs.length||!s.key)return'';
-  const off=tOff[si]||0;
-  const newKey=off===0?s.key:tNote(s.key,off);
-  const cnt=off===0?'0':(off>0?'+'+off:String(off));
-  const isOpen=tOpen[si];
-
-  const newKeyHTML=off!==0
-    ?`<span class="tr-arrow">→</span><span class="tr-new show">${esc(newKey)}</span>`:'';
-  const actions=off!==0?`
-    <div class="tr-actions">
-      <button class="btn btn-tr-save btn-sm" onclick="trAction(event,${si},'copy')">Save as ${esc(newKey)}</button>
-      <button class="btn btn-tr-over btn-sm" onclick="trAction(event,${si},'over')">⚠ Overwrite</button>
-      <button class="btn-tr-reset" onclick="trReset(event,${si})">✕ Reset</button>
-    </div>`:' ';
-
-  return `
-    <div class="card-footer">
-      <button class="btn-transpose${isOpen?' active':''}" onclick="toggleTr(event,${si})">
-        ↕ Transpose Key
-      </button>
-    </div>
-    <div class="tr-panel${isOpen?' open':''}" id="tr-${si}">
-      <div class="tr-key-display">
-        <span class="tr-key">${esc(s.key)}</span>${newKeyHTML}
-      </div>
-      <div class="tr-stepper">
-        <button class="tr-step" onclick="trShift(event,${si},-1)" title="Lower one semitone">♭</button>
-        <span class="tr-cnt">${cnt}</span>
-        <button class="tr-step" onclick="trShift(event,${si},+1)" title="Raise one semitone">♯</button>
-      </div>
-      ${actions}
-    </div>`;
-}
-
-function toggleTr(e,si){
-  e.stopPropagation();
-  tOpen[si]=!tOpen[si];
-  refreshCard(si);
-}
+// ── Transpose controls ───────────────────────────────────────────────────────
 function trShift(e,si,d){
   e.stopPropagation();
   tOff[si]=(((tOff[si]||0)+d)%12+12)%12;
@@ -613,40 +564,93 @@ function trShift(e,si,d){
 function trReset(e,si){e.stopPropagation();tOff[si]=0;refreshCard(si)}
 
 function refreshCard(si){
-  const s=SONGS[si];
   const el=document.getElementById('card-'+si);
   if(!el)return;
-  el.outerHTML=buildCard(s,si);
+  el.outerHTML=buildCard(SONGS[si],si);
 }
 
-async function trAction(e,si,mode){
+// ── View transposed chart (client-side, no server needed) ────────────────────
+function viewTransposed(e,si){
   e.stopPropagation();
-  const s=SONGS[si];const off=tOff[si]||0;if(!off)return;
-  const newKey=tNote(s.key,off);
-  const tPairs=applyTrans(s.pt_pairs,off);
-  const btn=e.currentTarget;btn.disabled=true;const orig=btn.textContent;btn.textContent='Saving…';
-  if(mode==='over'&&!confirm(`⚠ Permanently overwrite the chord chart for "${s.title}" in key of ${newKey}?\n\nThis cannot be undone.`)){
-    btn.disabled=false;btn.textContent=orig;return;
-  }
-  try{
-    if(mode==='over'){
-      const r1=await fetch(`${EDITOR_BASE}/api/song/${encodeURIComponent(s.title)}/pairs`,
-        {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tPairs)});
-      if(!r1.ok)throw new Error('Save failed — is the editor running?');
-      const r2=await fetch(`${EDITOR_BASE}/api/song/${encodeURIComponent(s.title)}/regenerate`,
-        {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-      const res=await r2.json();if(!res.ok)throw new Error(res.stderr||'Regen failed');
-      s.pt_pairs=tPairs;tOff[si]=0;
-      toast('Saved — now in key of '+newKey,'ok');
-    } else {
-      const r=await fetch(`${EDITOR_BASE}/api/song/${encodeURIComponent(s.title)}/regenerate-copy`,
-        {method:'POST',headers:{'Content-Type':'application/json'},
-         body:JSON.stringify({new_key:newKey,pairs:tPairs})});
-      const res=await r.json();if(!res.ok)throw new Error(res.stderr||'Copy failed');
-      toast('Saved: '+res.filename,'ok');
+  const s=SONGS[si];const off=tOff[si]||0;
+  if(!s.pt_pairs||!s.pt_pairs.length)return;
+  const newKey=tNote(s.key||'C',off);
+  const pairs=applyTrans(s.pt_pairs,off);
+
+  // Build HTML body — section headers + chord/lyric pairs
+  let body='';let lastSec=null;
+  pairs.forEach(pair=>{
+    if(pair.section&&pair.section!==lastSec){
+      body+=`<div class="sec-hdr">${esc(pair.section)}</div>`;
+      lastSec=pair.section;
     }
-    refreshCard(si);
-  }catch(err){toast('Error: '+err.message,'err');btn.disabled=false;btn.textContent=orig;}
+    const lyric=pair.lyric||'';
+    const entries=Object.entries(pair.chord_positions||{}).sort((a,b)=>+a[0]-+b[0]);
+    if(!entries.length){
+      body+=lyric?`<div class="lyric">${esc(lyric)}</div>`:'';
+      return;
+    }
+    // Build monospace chord line
+    let maxEnd=0;
+    const placed=entries.map(([pos,ch])=>{
+      const p=parseInt(pos);const chord=tChord(ch,0); // already transposed in pairs
+      maxEnd=Math.max(maxEnd,p+chord.length+2);return{p,chord};
+    });
+    maxEnd=Math.max(maxEnd,lyric.length+2);
+    const arr=new Array(maxEnd).fill(' ');
+    placed.forEach(({p,chord})=>{
+      for(let i=0;i<chord.length;i++){if(p+i<arr.length)arr[p+i]=chord[i];}
+    });
+    const chLine=arr.join('').replace(/ +$/,'');
+    body+=`<div class="pair"><div class="chord">${esc(chLine)}</div><div class="lyric">${esc(lyric)||' '}</div></div>`;
+  });
+
+  const meta=[
+    s.ccli?'CCLI '+s.ccli:'',
+    s.arr&&s.arr!==s.title?s.arr:'',
+    off!==0?'Transposed from '+s.key+' → '+newKey:'Key of '+newKey
+  ].filter(Boolean).join(' · ');
+
+  const html=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(s.title)} — ${newKey}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  padding:36px 48px;color:#0f172a;background:#fff;line-height:1.5}
+h1{font-size:20px;font-weight:800;margin-bottom:4px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.key-chip{display:inline-block;background:#2563eb;color:#fff;
+  font-family:'SF Mono','Courier New',monospace;font-size:16px;font-weight:900;
+  border-radius:7px;padding:3px 13px}
+.meta{font-size:12px;color:#64748b;margin-bottom:28px}
+.sec-hdr{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:#2563eb;margin:22px 0 5px;font-family:'SF Mono','Courier New',monospace}
+.pair{margin-bottom:2px}
+.chord{font-family:'SF Mono','Courier New',monospace;font-size:12px;font-weight:700;
+  color:#be185d;white-space:pre;line-height:1.5}
+.lyric{font-family:'SF Mono','Courier New',monospace;font-size:13px;
+  white-space:pre;line-height:1.5;margin-bottom:5px}
+.print-btn{position:fixed;top:20px;right:20px;padding:9px 18px;background:#2563eb;color:#fff;
+  border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 2px 10px rgba(37,99,235,.35)}
+.print-btn:hover{background:#1d4ed8}
+@media print{.print-btn{display:none}body{padding:20px 24px}}
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">⬇ Save as PDF</button>
+<h1>${esc(s.title)} <span class="key-chip">${newKey}</span></h1>
+<div class="meta">${meta}</div>
+${body}
+</body>
+</html>`;
+
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();}
+  else{toast('Allow pop-ups to view the transposed chart','err');}
 }
 
 render();
@@ -666,53 +670,34 @@ async function openEditor(si){
     [s.ccli?'CCLI '+s.ccli:'',s.key?'Key of '+s.key:''].filter(Boolean).join(' · ');
   updMKey();
 
-  // Show modal immediately with loading state
   document.getElementById('chart-area').innerHTML='<div class="cc-loading">Loading chart…</div>';
   document.getElementById('modal').style.display='flex';
   document.body.style.overflow='hidden';
 
-  // Fetch JP chart lines from editor API for reference display
   try{
     const r=await fetch(`${EDITOR_BASE}/api/song/${encodeURIComponent(s.title)}`);
-    if(r.ok){
-      const data=await r.json();
-      aJP=parseJpLines(data.chart_text||'');
-    }
+    if(r.ok){const data=await r.json();aJP=parseJpLines(data.chart_text||'');}
   }catch(e){}
 
   renderChart();
 }
 
-// Parse chart text to extract JP lyric lines in order (matching PT pairs)
 function parseJpLines(text){
-  const out=[];
-  let curSec='',isEn=false;
+  const out=[];let isEn=false;
   for(const raw of text.split('\n')){
     const line=raw.trim();
     if(!line||line==='COLUMN_BREAK')continue;
-    // Section header: no chord bracket, recognizable section word or has colon
     if(!/\[[A-G]/.test(line)&&(
       /^(verse|chorus|bridge|pre|intro|outro|tag|refrain|vamp|coda|section)/i.test(line)||
       (/:/.test(line)&&line.length<70&&!/https?:/.test(line))
-    )){
-      curSec=line;
-      isEn=/\bENG\b|\bENGLISH\b/i.test(line);
-      continue;
-    }
+    )){isEn=/\bENG\b|\bENGLISH\b/i.test(line);continue;}
     if(isEn)continue;
-    // Chord+lyric line → strip chords to get lyric
     if(/\[[A-G][^\]]*\]/.test(line)){
       const lyric=line.replace(/\[[^\]]*\]/g,'').replace(/\s+/g,' ').trim();
-      // Only include JP lines (contain CJK/kana)
-      if(/[぀-ゟ゠-ヿ一-鿿]/.test(lyric)){
-        out.push(lyric);
-      }
+      if(/[぀-ゟ゠-ヿ一-鿿]/.test(lyric)){out.push(lyric);}
       continue;
     }
-    // Plain JP text line (without chords)
-    if(/[぀-ゟ゠-ヿ一-鿿]/.test(line)&&!isEn){
-      out.push(line);
-    }
+    if(/[぀-ゟ゠-ヿ一-鿿]/.test(line)&&!isEn){out.push(line);}
   }
   return out;
 }
@@ -761,7 +746,6 @@ function renderChart(){
     const entries=Object.entries(pair.chord_positions||{}).sort((a,b)=>+a[0]-+b[0]);
     const isAct=selCh&&selCh.li===li;
 
-    // Chord row
     let cr='';
     entries.forEach(([ps,ch])=>{
       const tc=tChord(ch,mSt);const isSel=isAct&&selCh.ps===ps;
@@ -769,11 +753,9 @@ function renderChart(){
         onclick="selChord(event,${li},'${ps}')">${esc(tc)}</span>`;
     });
 
-    // JP reference line (if available)
     const jpLine=aJP[jpIdx]||'';
     if(aJP.length>0)jpIdx++;
-    const refHTML=jpLine
-      ?`<div class="cc-ref" title="Japanese reference">${esc(jpLine)}</div>`:'';
+    const refHTML=jpLine?`<div class="cc-ref" title="Japanese reference">${esc(jpLine)}</div>`:'';
 
     f.push(`<div class="cc-group${isAct?' active':''}">
       <div class="cc-chord-row">${cr||' '}</div>
@@ -792,7 +774,7 @@ function updEdBar(){
   const h=document.getElementById('editor-hint');
   if(selCh){
     const ch=aP[selCh.li]?.chord_positions[selCh.ps]||'?';
-    h.innerHTML=`<strong style="color:var(--violet)">${esc(tChord(ch,mSt))}</strong> selected — click Portuguese lyric to move &nbsp;<span class="kbd">←</span><span class="kbd">→</span>`;
+    h.innerHTML=`<strong style="color:var(--accent)">${esc(tChord(ch,mSt))}</strong> selected — click Portuguese lyric to move &nbsp;<span class="kbd">←</span><span class="kbd">→</span>`;
   } else {
     h.textContent='Click a chord to select, then click the Portuguese lyric to reposition it';
   }
