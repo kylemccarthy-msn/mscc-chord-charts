@@ -728,6 +728,7 @@ document.addEventListener('keydown',e=>{
     closeModal();return;
   }
   if(!selCh||document.getElementById('modal').style.display==='none')return;
+  if(e.target.id==='chord-name-input')return; // let the input handle its own keys
   if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
   e.preventDefault();
   const d=e.key==='ArrowLeft'?-1:1;
@@ -800,11 +801,19 @@ function lyricMD(e,li){
   if(!selCh)return; // no chord selected — allow normal contenteditable focus
   e.preventDefault(); // block contenteditable cursor when chord is selected
   if(selCh.li!==li){selCh=null;renderChart();return;}
-  // Reposition chord on this row
   const el=e.currentTarget;
   const lyric=aP[li].lyric||'';
-  const cw=lyric.length>0?el.offsetWidth/Math.max(lyric.length,1):8;
-  const np=String(Math.max(0,Math.min(Math.round((e.clientX-el.getBoundingClientRect().left)/cw),lyric.length)));
+
+  // Measure actual monospace char width using the CSS 'ch' unit
+  const tmp=document.createElement('span');
+  tmp.style.cssText='position:absolute;visibility:hidden;width:1ch;white-space:pre;left:0;top:0';
+  el.appendChild(tmp);
+  const cw=tmp.getBoundingClientRect().width||7.8;
+  el.removeChild(tmp);
+
+  // Lyric div has 3px left padding — subtract it so char 0 aligns with chord position 0
+  const relX=e.clientX-el.getBoundingClientRect().left-3;
+  const np=String(Math.max(0,Math.min(Math.round(relX/cw),lyric.length)));
   const pair=aP[li];const ch=pair.chord_positions[selCh.ps];
   if(ch!==undefined&&np!==selCh.ps){
     delete pair.chord_positions[selCh.ps];pair.chord_positions[np]=ch;
@@ -836,15 +845,13 @@ function updEdBar(){
     inp.value    = raw;
     inp.disabled = false;
     del.disabled = false;
-    // Focus the input so user can immediately type a new name
-    requestAnimationFrame(()=>{ inp.focus(); inp.select(); });
-    h.innerHTML=`Rename chord above &nbsp;·&nbsp; <span class="kbd">←</span><span class="kbd">→</span> to move &nbsp;·&nbsp; click lyric to reposition &nbsp;·&nbsp; <em style="color:var(--muted)">Esc = deselect</em>`;
+    h.innerHTML=`<span class="kbd">←</span><span class="kbd">→</span> move &nbsp;·&nbsp; click lyric to reposition &nbsp;·&nbsp; rename in box above &nbsp;·&nbsp; <em style="color:var(--muted)">Esc = deselect</em>`;
   } else if(chordAdd){
     inp.value    = '';
     inp.disabled = false;
     del.disabled = true;
     requestAnimationFrame(()=>{ inp.focus(); });
-    h.innerHTML=`Type chord name &amp; press <span class="kbd">Enter</span> to add at position ${chordAdd.pos} &nbsp;·&nbsp; <em style="color:var(--muted)">Esc = cancel</em>`;
+    h.innerHTML=`Type chord name &amp; press <span class="kbd">Enter</span> to add &nbsp;·&nbsp; <em style="color:var(--muted)">Esc = cancel</em>`;
   } else {
     inp.value    = '';
     inp.disabled = true;
